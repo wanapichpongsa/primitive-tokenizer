@@ -6,3 +6,6 @@ pub use most_freq::*;
 
 pub mod substitute;
 pub use substitute::*;
+
+pub mod r#trait;
+pub use r#trait::Token;

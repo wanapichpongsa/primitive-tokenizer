@@ -1,4 +1,4 @@
-pub fn desc_merge_sort(arr: Vec<u8>) -> Vec<u8> {
+pub fn desc_merge_sort(arr: Vec<u32>) -> Vec<u32> {
   if arr.len() <= 1 {
     return arr;
   }
