@@ -6,7 +6,7 @@ fn main() {
 
     let tokens = encode(text);
     // us: 33; gpt4o: 12
-    let most_frequent = most_frequent_codepoint(tokens);
-    let bytepaired_tokens = substitute_pairs(text, most_frequent);
+    let most_frequent = most_frequent_codepoint(&tokens);
+    let bytepaired_tokens = substitute_pairs(&tokens, most_frequent);
     println!("{:?}", bytepaired_tokens);
 }

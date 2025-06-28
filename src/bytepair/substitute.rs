@@ -1,58 +1,25 @@
 use std::vec::Vec;
-use super::codec::{decode, encode};
 
-pub fn substitute_pairs(text: &str, most_frequent: Vec<u8>) -> Vec<u8> {
-  let mint: [char; 4] = ['W', 'X', 'Y', 'Z'];
+pub fn substitute_pairs(tokens: &Vec<u8>, most_frequent: Vec<[u8; 2]>) -> Vec<u16> {
+  let mint: u16 = 256;
+  let most_freq_pair: [u8; 2] = most_frequent[0];
 
-  // Get the 2 most frequent chars
-  let most_freq_tokens = vec![most_frequent[0], most_frequent[1]];
-  let most_freq_chars_vec = decode(most_freq_tokens);
-  let pair_chars: [char; 2] = [most_freq_chars_vec[0], most_freq_chars_vec[1]];
-  let combinations: [String; 4] = [
-    pair_chars[0].to_string().repeat(2),
-    pair_chars[0].to_string() + &pair_chars[1].to_string(),
-    pair_chars[1].to_string() + &pair_chars[0].to_string(),
-    pair_chars[1].to_string().repeat(2),
-  ];
-
-  // value we will encode and return
-  let mut new_text = String::new();
-
-  // use Vec instead of &str for slicing because &str uses byte indexing && utf-8 is 2 bytes (would slice 1 char)
-  let chars: Vec<char> = text.chars().collect();
-  let length = chars.len();
+  let mut new_tokens: Vec<u16> = Vec::new();
   let mut matched: bool = false;
-  
-  for i in 0..length {
-    // if previously minted pair, skip over the 2nd char
+  // again, sliding window so last lone byte ignored.
+  for (first, second) in tokens.iter().zip(tokens.iter().skip(1)) {
     if matched {
       matched = false;
       continue;
     }
-
-    // If this is the last character, just add it
-    if i == length - 1 {
-      new_text.push(chars[i]);
-      break;
+    let pair: [u8; 2] = [*first, *second];
+    if pair == most_freq_pair {
+      new_tokens.push(mint);
+      matched = true;
+      continue;
     }
-
-    let [first, second] = &chars[i..i+2]
-      else { panic!("Not exactly 2 chars") };
-
-    let pair = first.to_string() + &second.to_string();
-
-    for i in 0..combinations.len() {
-      if pair == combinations[i] {
-        new_text.push(mint[i]);
-        matched = true;
-        break;
-      }
-    }
-    if !matched {
-      new_text.push(chars[i]);
-    }
+    new_tokens.push(*first as u16);
   }
-  println!("{}", new_text);
-  let new_tokens = encode(&new_text);
+
   return new_tokens;
 }
