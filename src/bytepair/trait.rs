@@ -1,4 +1,5 @@
 // Allow copying bits, equality operators, hashmaps and can be formatted via {:?}
+   #[allow(dead_code)]  
 pub trait Token: Copy + Eq + std::hash::Hash + std::fmt::Debug {
   // includes assert to panick if value not within smaller T maximum value.
   fn from_u32(val: u32) -> Self;
