@@ -4,7 +4,8 @@ use crate::bytepair::Token;
 
 fn init_freq_hashmap<T: Token>(tokens: &[T]) -> HashMap<[T; 2], u32> {
   let mut freq_hashmap: HashMap<[T; 2], u32> = HashMap::new();
-  // runs [0, 1], [1, 2], [2, 3] ... if leftover lone token skip.
+  // runs [0, 1], [1, 2], [2, 3] ... if leftover lone token skip
+  // Safe to conduct without even length check because we only want to get all pairs
   for (first, second) in tokens.iter().zip(tokens.iter().skip(1)) {
     let pair: [T; 2] = [*first, *second];
     *freq_hashmap.entry(pair).or_insert(0) += 1;
