@@ -1,3 +1,6 @@
+pub mod regex;
+pub use regex::*;
+
 pub mod codec;
 pub use codec::*;
 

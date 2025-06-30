@@ -2,13 +2,15 @@ use std::collections::{HashMap, HashSet};
 use super::desc_sort::desc_merge_sort;
 use crate::bytepair::Token;
 
-fn init_freq_hashmap<T: Token>(tokens: &[T]) -> HashMap<[T; 2], u32> {
+fn init_freq_hashmap<T: Token>(tokens: &Vec<Vec<T>>) -> HashMap<[T; 2], u32> {
   let mut freq_hashmap: HashMap<[T; 2], u32> = HashMap::new();
   // runs [0, 1], [1, 2], [2, 3] ... if leftover lone token skip
   // Safe to conduct without even length check because we only want to get all pairs
-  for (first, second) in tokens.iter().zip(tokens.iter().skip(1)) {
-    let pair: [T; 2] = [*first, *second];
-    *freq_hashmap.entry(pair).or_insert(0) += 1;
+  for byte_vec in tokens {
+      for (first, second) in byte_vec.iter().zip(byte_vec.iter().skip(1)) {
+          let pair: [T; 2] = [*first, *second];
+          *freq_hashmap.entry(pair).or_insert(0) += 1;
+      }
   }
   freq_hashmap
 }
@@ -23,7 +25,7 @@ fn init_descending_freq(freq_hashset: &HashSet<u32>) -> Vec<u32> {
   descending_freq
 }
 
-pub fn most_frequent_codepoint<T: Token>(tokens: &[T]) -> Vec<[T; 2]> {
+pub fn most_frequent_codepoint<T: Token>(tokens: &Vec<Vec<T>>) -> Vec<[T; 2]> {
   if tokens.len() < 2 {
     println!("Message too short for bytepair encoding");
     return vec![];

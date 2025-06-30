@@ -1,8 +1,8 @@
 use std::vec::Vec;
 use super::Token;
 
-pub fn substitute_pairs<T: Token>(
-  tokens: &[T],
+fn substitute_pairs<T: Token>(
+  tokens: &Vec<T>,
   most_freq_pair: [T; 2],
   mint: u32,
 ) -> Vec<u32> {
@@ -40,4 +40,19 @@ pub fn substitute_pairs<T: Token>(
   assert!(original_length == normalized_units);
 
   new_tokens
+}
+
+pub fn substitute_bytevec_pairs<T: Token>(
+  cleaned_tokens: &Vec<Vec<T>>,
+  most_freq_pair: [T; 2],
+  mint: u32
+) -> Vec<Vec<u32>> {
+  let mut new_cleaned_tokens: Vec<Vec<u32>> = Vec::new();
+
+  for byte_vec in cleaned_tokens {
+    let checked_vec = substitute_pairs(byte_vec, most_freq_pair, mint);
+    new_cleaned_tokens.push(checked_vec);
+  }
+
+  new_cleaned_tokens
 }

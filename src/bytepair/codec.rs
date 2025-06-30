@@ -2,9 +2,23 @@ use std::vec::Vec;
 use std::collections::HashMap;
 use crate::bytepair::desc_merge_sort;
 
-// UTF-8 bytes encoding
-pub fn encode_u8(text: &str) -> Vec<u8> {
+// not called yet so keep local
+fn encode_u8(text: &str) -> Vec<u8> {
   text.bytes().collect()
+}
+
+/* 
+  * To work with our Regex algorithm...
+  * We want to apply the rules of special tokens! (Token for each Regex pattern matched) e.g., 've, 'll, 're
+  * AND we can only count bytepair frequencies within each String item
+  * e.g., ["\'ve", " you", " been", "?"], "e " won't ever be a bytepair again.
+
+  This function will synergise with most_frequent_codepoint to decide pairs, and end its lifetime there.
+*/
+pub fn cleaned_encode_u8(cleaned_strings: &Vec<String>) -> Vec<Vec<u8>> {
+  cleaned_strings.iter().map(|str| 
+    encode_u8(str)
+  ).collect()
 }
 
 // lossy decodes as: U+FFFD REPLACEMENT CHARACTER � if byte not String
@@ -12,18 +26,13 @@ pub fn decode_u8(tokens: Vec<u8>) -> String {
   String::from_utf8_lossy(&tokens).to_string()
 }
 
+pub fn decode_u32(tokens: Vec<u32>) -> String {
+  tokens.iter().map(|t| char::from_u32(*t).unwrap_or('\u{FFFD}')).collect()
+}
+
 /*
-1. encoded &str -> Vec<u8>
-2. while i < merge_trials { for (key, _) in max({pair: frequency}); if (token, token) == pair: new_tokens.push(mint); mint++; i++; };
-
-HINT: Always got the new most frequent token (first original u8, then bytepair u32).
-Problem: Information loss. We don't know what the bytepair was (completely random)
-
-Condition: we need to pass the final bytepair compression.
-
-Flaw in methodology: There can be duplicate instances of a mint in the most frequent pair (ITS BOUND TO HAPPEN!)
+CORRECTION with prev comment committed: Information loss bug was because no even/odd check.
 */
-
 pub fn decompress_bytepair(
     compression: Vec<u32>,
     first_byte_pair: &HashMap<u32, [u8; 2]>,
