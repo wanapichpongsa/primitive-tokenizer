@@ -35,7 +35,7 @@ fn main() -> Result<(), Box<dyn Error>> {
     // to track tokenizing history (so we can reverse via decompression)
     let mut first_bytepair: HashMap<u32, [u8; 2]> = HashMap::with_capacity(1);
     let mut most_freq_pairs: HashMap<u32, [u32; 2]> = HashMap::with_capacity(num_compress as usize);
-    // Binary Forest
+
     fn bytepair_compress(
         num_compress: usize,
         cleaned_tokens: &Vec<Vec<u8>>,
@@ -66,11 +66,8 @@ fn main() -> Result<(), Box<dyn Error>> {
         bytepaired_tokens
     }
 
-    // DEBUG: Find the most frequent bytepair @...
-
     let result_tokens: Vec<u32> = bytepair_compress(num_compress, &cleaned_tokens, &mut first_bytepair, &mut most_freq_pairs)
         .iter().flat_map(|byte_vec| byte_vec.clone()).collect();
-    // After cleaning (vocab size 356): ~ 1.77 -> 1.67 (could've remembered first ratio wrong)
     println!("Compression ratio {}", (text.len() as f64/result_tokens.len() as f64));
 
     let decompressed_bytepair: Vec<u32> = decompress_bytepair(result_tokens, &first_bytepair, &most_freq_pairs);

@@ -4,7 +4,13 @@ use crate::bytepair::desc_merge_sort;
 
 // not called yet so keep local
 fn encode_u8(text: &str) -> Vec<u8> {
-  text.bytes().collect()
+  /* 
+    * .bytes() shortcut would've also worked
+    * but I wanted to emphasise how unicode codepoints are primitively – merges of bytes.
+  */
+  text.chars()
+      .flat_map(|c| c.to_string().into_bytes()) // utf-8 e.g., 'é' → [195, 169]
+      .collect()
 }
 
 /* 
@@ -21,7 +27,11 @@ pub fn cleaned_encode_u8(cleaned_strings: &Vec<String>) -> Vec<Vec<u8>> {
   ).collect()
 }
 
-// lossy decodes as: U+FFFD REPLACEMENT CHARACTER � if byte not String
+/* 
+  * lossy decodes as: U+FFFD REPLACEMENT CHARACTER � if byte not String.
+  * NOTE: I actually don't know how the 'interpreter' can differentiate whether a
+  * bytepair is unicode or a coincidence, but I suspect it'll take too long... so I'm using a shortcut here.
+*/
 pub fn decode_u8(tokens: Vec<u8>) -> String {
   String::from_utf8_lossy(&tokens).to_string()
 }
@@ -29,11 +39,12 @@ pub fn decode_u8(tokens: Vec<u8>) -> String {
 // used to evaluate whether bytepairs chosen were efficient
 #[allow(dead_code)]
 pub fn decode_u32(tokens: Vec<u32>) -> String {
+                              // 
   tokens.iter().map(|t| char::from_u32(*t).unwrap_or('\u{FFFD}')).collect()
 }
 
 /*
-CORRECTION with prev comment committed: Information loss bug was because no even/odd check.
+  CORRECTION with prev comment committed: Information loss bug was because no even/odd check.
 */
 pub fn decompress_bytepair(
     compression: Vec<u32>,
@@ -44,7 +55,7 @@ pub fn decompress_bytepair(
   all_byte_pairs.insert(256, first_byte_pair[&256].map(|v| v as u32));
 
   // .keys() -> Keys<_, K: &T, _>, .cloned() -> Keys<_, K: T, _>, .collect() -> Vec<T>
-  // ^ .keys() actually returns Keys<_, K: &T, V> (idk why) but we don't need it so I marked as _
+  // ^ .keys() actually returns Keys<_, K: &T, V> (idk why) but we don't need {V} so I replaced it with {_} in my explanation
   let mut desc_keys: Vec<u32> = all_byte_pairs.keys().cloned().collect();
   desc_keys = desc_merge_sort(desc_keys);
 

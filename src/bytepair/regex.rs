@@ -66,6 +66,14 @@ pub fn split_english_grammar(text: &str) -> Vec<String> {
         }
                               // curly unicode quote
         else if ch == '\'' || ch == '\u{2019}' {
+            /*  
+              * if statements are self-explanatory (have a read if you're confused).
+              * But if you're wondering why this boolean variable is here,
+              * its to prevent the default action in the second if branch (_ => word.push(ch))
+              * if there was a match in the first branch.
+              * Default action will undoubtedly be true if match in first branch because
+              * there are no overlapping characters in the single or double lettered grammatical suffixes we chose.
+            */
             let mut _first_condition_matched = false;
             if i + 2 < chars.len() {
                 match (chars[i+1], chars[i+2]) {
@@ -137,8 +145,6 @@ pub fn split_english_grammar(text: &str) -> Vec<String> {
                          word.push(ch);
                     }
                 }
-            } else if !_first_condition_matched {
-                word.push(ch);
             }
             _first_condition_matched = false;
         }
