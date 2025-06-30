@@ -31,5 +31,12 @@ FYI: Just because an algorithm has a sole purpose does not mean it is determinis
 - GPT4 Tokenizer in Rust: https://github.com/openai/tiktoken/blob/main/src/lib.rs
 - Google Sentencepiece (BPE that merges BPE codepoints (e.g., utf-8 || utf-16 || utf-32) instead of only utf-8). I don't know why this is better, but apparently it can also *inference* tokenizers instead of just *training* them: https://github.com/google/sentencepiece
 
+### What's Next?
+1. Glory awaits those who can think of a better system than modern Tokenization: https://arxiv.org/pdf/2412.09871; https://github.com/facebookresearch/blt/blob/main/bytelatent/data/data_types.py
+
+Heuristic for cons of Tokenization: Why should we spend a token on a full stop at the end of a sentence when it is repeated so many times already (so commonly used anyways)
+
+2. Why do languages have the conventions they have?
+
 ### Primitive
 AI code that touches base with the simplest ideas in programming (e.g., hashmaps and loops)
