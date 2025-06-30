@@ -26,18 +26,13 @@ fn init_descending_freq(freq_hashset: &HashSet<u32>) -> Vec<u32> {
 }
 
 pub fn most_frequent_codepoint<T: Token>(tokens: &Vec<Vec<T>>) -> Vec<[T; 2]> {
-  if tokens.len() < 2 {
-    println!("Message too short for bytepair encoding");
-    return vec![];
-  }
-
   let freq_hashmap: HashMap<[T; 2], u32> = init_freq_hashmap(tokens);
   let freq_hashset: HashSet<u32> = init_freq_hashset(&freq_hashmap);
   let descending_freq: Vec<u32> = init_descending_freq(&freq_hashset);
 
   let mut keys_by_freq: Vec<[T; 2]> = Vec::with_capacity(freq_hashmap.len());
   // O(m * n)
-  // for every descending freq, push key with matching value
+  // for every descending freq, push key with equal frequency as value
   for unique_freq in descending_freq {
     for (key, value) in freq_hashmap.iter() {
       if *value == unique_freq {

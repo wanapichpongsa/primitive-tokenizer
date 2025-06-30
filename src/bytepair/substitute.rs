@@ -37,7 +37,7 @@ fn substitute_pairs<T: Token>(
   
   let original_length = tokens.len();
   let normalized_units = new_tokens.len() + matches;
-  assert!(original_length == normalized_units);
+  assert!(original_length == normalized_units, "compression information loss");
 
   new_tokens
 }
@@ -47,6 +47,7 @@ pub fn substitute_bytevec_pairs<T: Token>(
   most_freq_pair: [T; 2],
   mint: u32
 ) -> Vec<Vec<u32>> {
+  println!("mint: {}", mint);
   let mut new_cleaned_tokens: Vec<Vec<u32>> = Vec::new();
 
   for byte_vec in cleaned_tokens {

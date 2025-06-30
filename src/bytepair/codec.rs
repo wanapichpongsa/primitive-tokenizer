@@ -26,6 +26,8 @@ pub fn decode_u8(tokens: Vec<u8>) -> String {
   String::from_utf8_lossy(&tokens).to_string()
 }
 
+// used to evaluate whether bytepairs chosen were efficient
+#[allow(dead_code)]
 pub fn decode_u32(tokens: Vec<u32>) -> String {
   tokens.iter().map(|t| char::from_u32(*t).unwrap_or('\u{FFFD}')).collect()
 }
